@@ -1,0 +1,26 @@
+## Editors - OS
+.idea
+.DS_Store
+Thumbs.db
+
+## builders
+node_modules
+
+## Environment params
+.env
+
+## Yii directories
+www/assets/*
+www/files/*
+www/cache/*
+console/runtime/*
+webapp/runtime/*
+common/runtime/*
+vendor/*
+
+## Keep clean tests dir
+tests/codeception/_output/*
+tests/codeception/_support/*
+
+## Force files to keep
+!.gitkeep

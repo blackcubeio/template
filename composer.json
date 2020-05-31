@@ -1,0 +1,71 @@
+{
+    "name": "blackcube/template",
+    "description": "Blackcube template Application",
+    "keywords": ["Blackcube", "template"],
+    "homepage": "https://code.redcat.io/blackcube/template",
+    "type": "project",
+    "license": "proprietary",
+    "support": {
+        "issues": "https://code.redcat.io/blackcube/template/issues",
+        "wiki": "https://code.redcat.io/blackcube/template/wikis/home",
+        "source": "https://code.redcat.io/blackcube/template/tree/devel"
+    },
+    "authors": [
+        {
+            "name": "Philippe Gaultier",
+            "email": "pgaultier@redcat.io"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        },
+        {
+            "type": "vcs",
+            "url": "https://autodeploy:ctSfsYAyCw7M8xa4d-6s@code.redcat.io/blackcube/admin.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://autodeploy:34VgAitrEDfFhWJ8szuD@code.redcat.io/blackcube/core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://autodeploy:PxJM8Yd9eNJCxQwSDH-L@code.redcat.io/blackcube//module-analytics.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://autodeploy:3rNSUDMCMxC354ku1cZA@code.redcat.io/blackcube//module-security.git"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-gd": "*",
+        "blackcube/core": "~1.0",
+        "blackcube/admin": "~1.0",
+        "vlucas/phpdotenv": "~4.1",
+        "yiisoft/yii2": "2.0.32"
+    },
+    "require-dev" : {
+        "yiisoft/yii2-debug":"~2.0",
+        "yiisoft/yii2-gii":"~2.0"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "autoload": {
+        "psr-4": {
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+        ]
+    }
+}

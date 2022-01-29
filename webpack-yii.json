@@ -1,12 +1,9 @@
 {
     "sourceDir": "./webapp/assets/webpack",
     "entry": {
-        "main": ["./scss/style.scss"],
+        "main": "./scss/style.scss",
         "app": ["./boot.ts", "./app.ts"]
     },
-    "commonBundles": [
-        "manifest"
-    ],
     "externals": {
     },
     "alias": {

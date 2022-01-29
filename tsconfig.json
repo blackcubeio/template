@@ -3,12 +3,16 @@
         "allowJs": true,
         "declaration": false,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "moduleResolution": "node",
+        "typeRoots": ["./node_modules/@types"],
+        "lib": ["es2017", "dom"],
         "jsx": "react",
-        "module": "commonjs",
+        "module": "esnext",
         "noImplicitAny": false,
         "sourceMap": true,
         "strictNullChecks": true,
-        "target": "es5",
+        "target": "es2015",
         "esModuleInterop": true
     },
     "exclude": [

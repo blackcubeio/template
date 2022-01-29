@@ -20,22 +20,6 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        },
-        {
-            "type": "vcs",
-            "url": "https://autodeploy:ctSfsYAyCw7M8xa4d-6s@code.redcat.io/blackcube/admin.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://autodeploy:34VgAitrEDfFhWJ8szuD@code.redcat.io/blackcube/core.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://autodeploy:PxJM8Yd9eNJCxQwSDH-L@code.redcat.io/blackcube//module-analytics.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://autodeploy:3rNSUDMCMxC354ku1cZA@code.redcat.io/blackcube//module-security.git"
         }
     ],
     "require": {
@@ -44,20 +28,29 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-gd": "*",
-        "blackcube/core": "~1.0",
-        "blackcube/admin": "~1.0",
-        "vlucas/phpdotenv": "~4.1",
-        "yiisoft/yii2": "2.0.32"
+        "blackcube/core": "^2.1",
+        "blackcube/admin": "^2.1",
+        "vlucas/phpdotenv": "~5.0",
+        "yiisoft/yii2": "~2.0",
+        "yiisoft/yii2-redis": "~2.0"
     },
     "require-dev" : {
         "yiisoft/yii2-debug":"~2.0",
         "yiisoft/yii2-gii":"~2.0"
     },
     "config": {
-        "process-timeout": 1800
+        "process-timeout": 1800,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
     },
     "autoload": {
         "psr-4": {
+            "console\\": "console",
+            "app\\": "common",
+            "webapp\\": "webapp",
+            "modules\\": "modules",
+            "plugins\\": "plugins"
         }
     },
     "autoload-dev": {

@@ -2,7 +2,7 @@
  * webpack.config.js
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2018-2019 Redcat
+ * @copyright 2018-2021 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -17,9 +17,14 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const Hashes = require('jshashes');
-const { AureliaPlugin } = require('aurelia-webpack-plugin');
-// const TailwindCssPlugin = require('tailwindcss');
+const { AureliaPlugin, ModuleDependenciesPlugin } = require('aurelia-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
+// const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
+
+
 const AutoprefixerPlugin = require('autoprefixer');
+const CssNano = require('cssnano');
 
 const prodFlag = (process.argv.indexOf('-p') !== -1) || (process.argv.indexOf('production') !== -1);
 
@@ -39,12 +44,22 @@ if (argv.env && argv.env.config) {
 
 var webpackConfig = {
     entry: config.entry,
+    mode: prodFlag ? 'production' : 'development',
+    performance: {
+        hints: prodFlag ? false : 'warning',
+        maxEntrypointSize: 512000,
+        maxAssetSize: 512000
+    },
     context: path.resolve(__dirname, config.sourceDir, config.subDirectories.sources),
     output: {
         path: path.resolve(__dirname, config.sourceDir, config.subDirectories.dist),
-        filename: prodFlag ?  config.assets.scripts + '/[name].[chunkhash:6].js' : config.assets.scripts + '/[name].js'
+        filename: prodFlag ?  config.assets.scripts + '/[name].[chunkhash:8].js' : config.assets.scripts + '/[name].js',
+        // chunkFilename: prodFlag ?  config.assets.scripts + '/[name]-[id].[chunkhash:8].js' : config.assets.scripts + '/[name]-[id].js'
+        chunkFilename: prodFlag ?  config.assets.scripts + '/[name].[chunkhash:8].js' : config.assets.scripts + '/[name].js'
+        // sourceMapFilename: prodFlag ?  config.assets.scripts + '/[name]-[id].[chunkhash:8].js' : config.assets.scripts + '/[name]-[id].js'
     },
     plugins: [
+        // new RemoveEmptyScriptsPlugin(),
         new webpack.DefinePlugin({
             PRODUCTION: JSON.stringify(prodFlag),
             VERSION: JSON.stringify(prodFlag ? version : version + '-dev'),
@@ -52,9 +67,14 @@ var webpackConfig = {
         new webpack.ProvidePlugin({
             Promise: "es6-promise-promise"
         }),
+
+        new DuplicatePackageCheckerPlugin(),
         new MiniCssExtractPlugin({
-            filename: prodFlag ? config.assets.styles + '/[name].[hash:6].css' : config.assets.styles + '/[name].css',
-            chunkFilename: prodFlag ? config.assets.styles + '/[id].[hash:6].css' : config.assets.styles + '/[id].css'
+            // path: path.resolve(__dirname, config.sourceDir, config.subDirectories.dist),
+            filename: prodFlag ? config.assets.styles + '/[name].[chunkhash:8].css' : config.assets.styles + '/[name].css',
+            // chunkFilename: prodFlag ? config.assets.styles + '/[name]-[id].[chunkhash:8].css' : config.assets.styles + '/[name]-[id].css'
+            chunkFilename: prodFlag ? config.assets.styles + '/[name].[chunkhash:8].css' : config.assets.styles + '/[name].css'
+            // sourceMapFilename: prodFlag ?  config.assets.scripts + '/[name]-[id].[chunkhash:8].css' : config.assets.scripts + '/[name]-[id].css'
         }),
         /**/
         new AureliaPlugin({
@@ -62,94 +82,39 @@ var webpackConfig = {
             entry: ["app"]
         }),
         /**/
+        /**/
         new CompressionWebpackPlugin({
-            filename: "[path].gz[query]",
+            filename: "[path][base].gz[query]",
             algorithm: "gzip",
             test: /\.(js|css)$/,
             threshold: 10,
             minRatio: 1
         }),
+        /**/
         new CleanWebpackPlugin({
             verbose: true,
-            dry: false
+            dry: !prodFlag
         }),
+        /**/
         new AssetsWebpackPlugin({
             prettyPrint: true,
             filename: config.catalog,
             path:config.sourceDir,
             processOutput: function (assets) {
-                let i;
-                let j;
-                let finalAsset = {};
-                for (i in assets) {
-                    if(assets.hasOwnProperty(i)) {
-                        if (finalAsset.hasOwnProperty(i) === false) {
-                            finalAsset[i] = {};
+                let finalAssets = {};
+                for (let a in assets) {
+                    if (a.length > 0) {
+                        for(let b in assets[a]) {
+                            assets[a][b] = assets[a][b].replace('auto/', '');
                         }
-                        for (j in assets[i]) {
-                            if (assets[i].hasOwnProperty(j)) {
-                                let currentAsset = assets[i][j];
-                                if (Array.isArray(currentAsset) === true) {
-                                    for (let c = 0; c < currentAsset.length; c++) {
-                                        if ((typeof currentAsset[c] !== 'string') && (currentAsset[c].file)) {
-                                            currentAsset[c] = currentAsset[c].file;
-                                        }
-                                        if (config.hasOwnProperty('sri') === true && config.sri !== false) {
-                                            let file = path.resolve(__dirname, config.sourceDir, config.subDirectories.dist, currentAsset[c]);
-                                            let contents = fs.readFileSync(file).toString();
-                                            let hash;
-                                            switch (config.sri) {
-                                                case 'sha256':
-                                                    hash = 'sha256-' + new Hashes.SHA256().b64(contents);
-                                                    break;
-                                                case 'sha512':
-                                                default:
-                                                    hash = 'sha512-' + new Hashes.SHA512().b64(contents);
-                                                    break;
-                                            }
-
-                                            finalAsset[i][j] = {
-                                                file: currentAsset[c].replace('\\', '/'),
-                                                integrity: hash
-                                            };
-                                        } else {
-                                            finalAsset[i][j] = currentAsset[c].replace('\\', '/');
-                                        }
-
-                                    }
-                                } else {
-                                    if ((typeof currentAsset !== 'string') && (currentAsset.file)) {
-                                        currentAsset = currentAsset.file;
-                                    }
-                                    if (config.hasOwnProperty('sri') === true && config.sri !== false) {
-                                        let file = path.resolve(__dirname, config.sourceDir, config.subDirectories.dist, currentAsset);
-                                        let contents = fs.readFileSync(file).toString();
-                                        let hash;
-                                        switch (config.sri) {
-                                            case 'sha256':
-                                                hash = 'sha256-' + new Hashes.SHA256().b64(contents);
-                                                break;
-                                            case 'sha512':
-                                            default:
-                                                hash = 'sha512-' + new Hashes.SHA512().b64(contents);
-                                                break;
-                                        }
-
-                                        finalAsset[i][j] = {
-                                            file: currentAsset.replace('\\', '/'),
-                                            integrity: hash
-                                        };
-                                    } else {
-                                        finalAsset[i][j] = currentAsset.replace('\\', '/');
-                                    }
-                                }
-                            }
-                        }
+                        // console.log(assets[a]);
+                        finalAssets[a] = assets[a];
                     }
                 }
-                return JSON.stringify(finalAsset, null, this.prettyPrint ? 2 : null);
+                return JSON.stringify(finalAssets, null, this.prettyPrint ? 2 : null);
             }
         })
+        /**/
     ],
     externals: config.externals,
     module: {
@@ -198,8 +163,17 @@ var webpackConfig = {
                             }
                         }
                     },
-                    { loader: 'css-loader', options: { importLoaders: 1 } },
-                    { loader: 'postcss-loader', options: { ident: 'postcss', plugins:[/*/TailwindCssPlugin, /**/AutoprefixerPlugin]} },
+                    { loader: 'css-loader', options: {
+                        importLoaders: 2,
+                        // modules: false
+                    } },
+                    { loader: 'postcss-loader', options: {
+                        postcssOptions: {
+                            ident: 'postcss',
+                            plugins:[AutoprefixerPlugin, CssNano({preset: 'default'})],
+                            minimize: true
+                        }
+                    }},
                     'sass-loader'
                 ]
             },
@@ -214,40 +188,93 @@ var webpackConfig = {
                             }
                         }
                     },
-                    { loader: 'css-loader', options: { importLoaders: 1 } },
-                    { loader: 'postcss-loader', options: { ident: 'postcss', plugins:[/*/TailwindCssPlugin, /**/AutoprefixerPlugin]} }
+                    { loader: 'css-loader', options: {
+                        importLoaders: 2,
+                        // modules: false
+                    } },
+                    { loader: 'postcss-loader', options: {
+                        postcssOptions: {
+                            ident: 'postcss',
+                            plugins:[AutoprefixerPlugin, CssNano({preset: 'default'})],
+                            minimize: true
+                        }
+                    }},
                 ]
             },
             {
                 test: /\.html$/,
                 loader: 'html-loader',
                 options: {
-                    attrs: ['img:src', ':image-src', 'use:xlink:href'] // Handle custom attributes (data-src, image-src, ...)
+                    //TODO: Fix attrs: ['img:src', ':image-src', 'use:xlink:href'] // Handle custom attributes (data-src, image-src, ...)
+                    attributes: {
+                        list: [
+                            '...',
+                            {
+                                tag: 'use',
+                                attribute: 'xlink:href',
+                                type: 'src'
+                            }
+                        ]
+                    },
+
                 }
             }
         ]
     },
     optimization: {
+        removeEmptyChunks: true,
         runtimeChunk: {
             name: "manifest"
         },
         splitChunks: {
+            hidePathInfo: true, // prevents the path from being used in the filename when using maxSize
+            chunks: 'initial',
             cacheGroups: {
-                aurelia: {
-                    test: /[\\/]node_modules[\\/]aurelia/,
-                    name: "aurelia",
-                    chunks: "all"
+                default: false,
+                vendors: { // picks up everything from node_modules as long as the sum of node modules is larger than minSize
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    priority: 19,
+                    enforce: true, // causes maxInitialRequests to be ignored, minSize still respected if specified in cacheGroup
+                    minSize: 1000 // use the default minSize
                 },
+                vendorsAsync: { // vendors async chunk, remaining asynchronously used node modules as single chunk file
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors.async',
+                    chunks: 'async',
+                    priority: 9,
+                    reuseExistingChunk: true,
+                    minSize: 10000  // use smaller minSize to avoid too much potential bundle bloat due to module duplication.
+                },
+                commonsAsync: { // commons async chunk, remaining asynchronously used modules as single chunk file
+                    name: 'commons.async',
+                    minChunks: 2, // Minimum number of chunks that must share a module before splitting
+                    chunks: 'async',
+                    priority: 0,
+                    reuseExistingChunk: true,
+                    minSize: 10000  // use smaller minSize to avoid too much potential bundle bloat due to module duplication.
+                }
+                /*/
                 commons: {
                     test: /[\\/]node_modules[\\/](?!aurelia)/,
                     name: "vendor",
                     chunks: "all"
                 }
+                /**/
             }
         }
     },
     resolve: {
-        alias: config.alias,
+        alias: {
+            // https://github.com/aurelia/dialog/issues/387
+            // Uncomment next line if you had trouble to run aurelia-dialog on IE11
+            // 'aurelia-dialog': path.resolve(__dirname, 'node_modules/aurelia-dialog/dist/umd/aurelia-dialog.js'),
+
+            // https://github.com/aurelia/binding/issues/702
+            // Enforce single aurelia-binding, to avoid v1/v2 duplication due to
+            // out-of-date dependencies on 3rd party aurelia plugins
+            'aurelia-binding': path.resolve(__dirname, 'node_modules/aurelia-binding')
+        },
         extensions: ['.tsx', '.ts', '.js'],
         modules: [
             path.resolve(__dirname, config.sourceDir, config.subDirectories.sources, "app"),
@@ -262,7 +289,16 @@ var webpackConfig = {
 
 if (!prodFlag) {
     webpackConfig.devtool = 'source-map';
-
 }
+/*/
+if (serviceWorker) {
+    webpackConfig.plugins.unshift(        // new ServiceWorkerPlugin
+        new ServiceWorkerWebpackPlugin({
+            entry: serviceWorker,
+            filename: config.assets.scripts +'/'+ config.serviceWorker,
+        })
+    );
+}
+/**/
 
 module.exports = webpackConfig;

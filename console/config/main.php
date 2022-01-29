@@ -28,6 +28,7 @@ $config['controllerMap'] = [
         'migrationNamespaces' => [
             'app\\migrations\\'
         ],
+        'migrationPath' => []
     ],
 ];
 // $config['params'] = [];

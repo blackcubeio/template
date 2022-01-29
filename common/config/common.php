@@ -21,6 +21,7 @@ use yii\db\mysql\Schema as MysqSchema;
 use yii\db\pgsql\Schema as PgsqlSchema;
 use yii\i18n\Formatter;
 use yii\log\FileTarget;
+use yii\log\SyslogTarget;
 use yii\rbac\DbManager;
 use yii\redis\Connection as RedisConnection;
 use yii\redis\Cache as RedisCache;
@@ -37,11 +38,13 @@ $config = [
         '@webapp' => dirname(__DIR__, 2) . '/webapp',
         '@console' => dirname(__DIR__, 2) . '/console',
         '@data' => dirname(__DIR__, 2) . '/data',
+        '@modules' => dirname(__DIR__, 2) . '/modules',
+        '@plugins' => dirname(__DIR__, 2) . '/plugins',
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(__DIR__, 2) . '/vendor',
-    'version' => getenv('APP_VERSION'),
+    'version' => getstrenv('APP_VERSION'),
     'bootstrap' => [
         'log',
         'blackcube',
@@ -67,19 +70,15 @@ $config = [
         'db' => [
             'class' => Connection::class,
             'charset' => 'utf8',
-            'dsn' => getenv('DB_DRIVER').':host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_DATABASE'),
-            'username' => getenv('DB_USER'),
-            'password' => getenv('DB_PASSWORD'),
-            'tablePrefix' => getenv('DB_TABLE_PREFIX'),
-            'enableSchemaCache' => getenv('DB_SCHEMA_CACHE'),
-            'schemaCacheDuration' => getenv('DB_SCHEMA_CACHE_DURATION'),
+            'dsn' => getstrenv('DB_DRIVER').':host=' . getstrenv('DB_HOST') . ';port=' . getstrenv('DB_PORT') . ';dbname=' . getstrenv('DB_DATABASE'),
+            'username' => getstrenv('DB_USER'),
+            'password' => getstrenv('DB_PASSWORD'),
+            'tablePrefix' => getstrenv('DB_TABLE_PREFIX'),
+            'enableSchemaCache' => getboolenv('DB_SCHEMA_CACHE'),
+            'schemaCacheDuration' => getintenv('DB_SCHEMA_CACHE_DURATION'),
         ],
         'cache' => [
             'class' => DummyCache::class,
-            // 'class' => DbCache::class,
-            // 'class' => RedisCache::class,
-            // 'redis' => 'redis',
-
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -87,6 +86,16 @@ $config = [
                 [
                     'class' => FileTarget::class,
                     'levels' => YII_DEBUG ? ['error', 'warning', 'profile']:['error', 'warning'],
+                    'maskVars' => [
+                        '_SERVER.HTTP_AUTHORIZATION',
+                        '_SERVER.PHP_AUTH_USER',
+                        '_SERVER.PHP_AUTH_PW',
+                        '_SERVER.DB_PASSWORD',
+                        '_SERVER.DB_ROOT_PASSWORD',
+                        '_SERVER.REDIS_PASSWORD',
+                        '_SERVER.PROFIDEO_PASSWORD',
+                        '_SERVER.FILESYSTEM_S3_SECRET',
+                    ],
                 ],
             ],
         ],
@@ -108,38 +117,70 @@ $config = [
     ],
 ];
 
-if (getenv('DB_DRIVER') === 'pgsql') {
+if (getstrenv('DB_DRIVER') === 'pgsql') {
     $config['components']['db']['schemaMap'] = [
-        getenv('DB_DRIVER') => [
-            'class' => getenv('DB_DRIVER') === 'pgsql' ? PgsqlSchema::class : MysqSchema::class,
-            'defaultSchema' => getenv('DB_SCHEMA')
+        getstrenv('DB_DRIVER') => [
+            'class' => getstrenv('DB_DRIVER') === 'pgsql' ? PgsqlSchema::class : MysqSchema::class,
+            'defaultSchema' => getstrenv('DB_SCHEMA')
         ]
     ];
 }
 
-if (getenv('FILESYSTEM_TYPE') === 'local') {
-    $config['components']['fs'] = [
-        'class' => LocalFilesystem::class,
-        'path' => getenv('FILESYSTEM_LOCAL_PATH'),
-        'cache' => (getenv('FILESYSTEM_CACHE') == 1) ? 'cache' : null,
-        'cacheKey' => (getenv('FILESYSTEM_CACHE') == 1) ? 'flysystem' : null,
-        'cacheDuration' => (getenv('FILESYSTEM_CACHE') == 1) ? getenv('FILESYSTEM_CACHE_DURATION') : null,
-    ];
-} elseif (getenv('FILESYSTEM_TYPE') === 's3') {
-    $config['components']['fs'] = [
-        'class' => AwsS3Filesystem::class,
-        'key' => getenv('FILESYSTEM_S3_KEY'),
-        'secret' => getenv('FILESYSTEM_S3_SECRET'),
-        'bucket' => getenv('FILESYSTEM_S3_BUCKET'),
-        'region' => 'us-east-1',
-        'version' => 'latest',
-        'endpoint' => getenv('FILESYSTEM_S3_ENDPOINT'),
-        'pathStyleEndpoint' => (getenv('FILESYSTEM_S3_PATH_STYLE') == 1) ? true : false,
-        'cache' => (getenv('FILESYSTEM_CACHE') == 1) ? 'cache' : null,
-        'cacheKey' => (getenv('FILESYSTEM_CACHE') == 1) ? 'flysystem' : null,
-        'cacheDuration' => (getenv('FILESYSTEM_CACHE') == 1) ? getenv('FILESYSTEM_CACHE_DURATION') : null,
+if (getboolenv('') === true) {
+    $config['components']['log']['targets'][] = [
+        'class' => SyslogTarget::class,
+        'enabled' => getboolenv('SYSLOG_ENABLED'),
+        'levels' => YII_DEBUG ? ['error', 'warning', 'profile']:['error', 'warning'],
+        'identity' => getstrenv('SYSLOG_IDENTITY'),
+        'maskVars' => [
+            '_SERVER.HTTP_AUTHORIZATION',
+            '_SERVER.PHP_AUTH_USER',
+            '_SERVER.PHP_AUTH_PW',
+            '_SERVER.DB_PASSWORD',
+            '_SERVER.DB_ROOT_PASSWORD',
+            '_SERVER.REDIS_PASSWORD',
+            '_SERVER.PROFIDEO_PASSWORD',
+            '_SERVER.FILESYSTEM_S3_SECRET',
+        ],
     ];
 }
-
-
+if (getboolenv('REDIS_ENABLED')) {
+    $config['components']['redis'] = [
+        'class' => RedisConnection::class,
+        'hostname' => getstrenv('REDIS_HOST'),
+        'port' => getintenv('REDIS_PORT'),
+        'database' => getintenv('REDIS_DATABASE'),
+    ];
+    $password = getstrenv('REDIS_PASSWORD');
+    if ($password !== false && empty($password) === false) {
+        $config['components']['redis']['password'] = $password;
+    }
+    $config['components']['cache'] = [
+        'class' => RedisCache::class,
+        'redis' => 'redis'
+    ];
+}
+if (getstrenv('FILESYSTEM_TYPE') === 'local') {
+    $config['components']['fs'] = [
+        'class' => LocalFilesystem::class,
+        'path' => getstrenv('FILESYSTEM_LOCAL_PATH'),
+        'cache' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'cache' : null,
+        'cacheKey' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'flysystem' : null,
+        'cacheDuration' => (getboolenv('FILESYSTEM_CACHE') === true) ? getintenv('FILESYSTEM_CACHE_DURATION') : null,
+    ];
+} elseif (getstrenv('FILESYSTEM_TYPE') === 's3') {
+    $config['components']['fs'] = [
+        'class' => AwsS3Filesystem::class,
+        'key' => getstrenv('FILESYSTEM_S3_KEY'),
+        'secret' => getstrenv('FILESYSTEM_S3_SECRET'),
+        'bucket' => getstrenv('FILESYSTEM_S3_BUCKET'),
+        'region' => getstrenv('FILESYSTEM_S3_REGION'),
+        'version' => 'latest',
+        'endpoint' => getstrenv('FILESYSTEM_S3_ENDPOINT'),
+        'pathStyleEndpoint' => getboolenv('FILESYSTEM_S3_PATH_STYLE'),
+        'cache' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'cache' : null,
+        'cacheKey' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'flysystem' : null,
+        'cacheDuration' => (getboolenv('FILESYSTEM_CACHE') === true) ? getintenv('FILESYSTEM_CACHE_DURATION') : null,
+    ];
+}
 return $config;

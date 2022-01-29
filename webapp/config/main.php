@@ -12,9 +12,9 @@
  * @package webapp\config
  */
 
-use app\behaviors\SecurityBehavior;
-use app\behaviors\GoogleAnalyticsBehavior;
+use yii\redis\Session as RedisSession;
 use yii\rest\UrlRule as RestUrlRule;
+use yii\web\JsonParser;
 use yii\web\ErrorHandler;
 
 $config = require dirname(dirname(__DIR__)).'/common/config/common.php';
@@ -26,27 +26,33 @@ $config['name'] = 'Blackcube template web application';
 $config['controllerNamespace'] = 'webapp\controllers';
 
 $config['components']['request'] = [
-    'cookieValidationKey' => getenv('YII_COOKIE_VALIDATION_KEY'),
+    'cookieValidationKey' => getstrenv('YII_COOKIE_VALIDATION_KEY'),
     'parsers' => [
-        'application/json' => 'yii\web\JsonParser',
+        'application/json' => JsonParser::class,
     ],
 ];
-/**/
+$proxyIp = getstrenv('PROXY_TRUSTED_HOSTS');
+if (empty($proxyIp) === false) {
+    $config['components']['request']['trustedHosts'] = [
+        $proxyIp
+    ];
+}
+
+if (getboolenv('REDIS_ENABLED') === true) {
+    $config['components']['session'] = [
+        'class' => RedisSession::class,
+        'redis' => 'redis',
+        'useCookies' => true,
+    ];
+
+}
+
 if (defined('YII_ENV') && YII_ENV !== 'dev') {
     $config['components']['errorHandler'] = [
         'class' => ErrorHandler::class,
-        'errorAction' => 'technical/error'
+        'errorAction' => 'technical/maintenance'
     ];
 }
-/**/
-
-
-/*/
-$config['components']['user'] = [
-    'identityClass' => app\models\User::class,
-    'enableAutoLogin' => true,
-    'loginUrl' => ['/identification/login'],
-];
 /**/
 
 /*/
@@ -57,7 +63,6 @@ $config['components']['session'] = [
 /**/
 
 if (defined('YII_ENV') && YII_ENV === 'dev') {
-    /**/
     $yiiGii = class_exists(yii\gii\Module::class);
     if ($yiiGii && defined('YII_DEBUG') && YII_DEBUG == true) {
         $config['modules']['gii'] = [
@@ -66,8 +71,6 @@ if (defined('YII_ENV') && YII_ENV === 'dev') {
         ];
         $config['bootstrap'][] = 'gii';
     }
-    /**/
-    /**/
     $yiiDebug = class_exists(yii\debug\Module::class);
     if ($yiiDebug && defined('YII_DEBUG') && YII_DEBUG == true) {
         $config['modules']['debug'] = [
@@ -76,7 +79,6 @@ if (defined('YII_ENV') && YII_ENV === 'dev') {
         ];
         $config['bootstrap'][] = 'debug';
     }
-    /**/
 }
 
 $config['components']['assetManager'] = [

@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2021 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -28,7 +28,7 @@ use Yii;
  * Base webpack assets
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2021 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -72,9 +72,10 @@ class WebpackAsset extends AssetBundle
      * @inheritdoc
      */
     public $webpackBundles = [
-        // 'manifest',
-        // 'vendor',
-        'main',
+        'manifest',
+        'vendors',
+        // 'main',
+        'app'
     ];
 
     /**
@@ -89,7 +90,8 @@ class WebpackAsset extends AssetBundle
      */
     public $jsOnly = [
         'manifest',
-        'vendor',
+        'vendors',
+        'app'
     ];
 
     public $js = [
@@ -98,13 +100,14 @@ class WebpackAsset extends AssetBundle
      * @inheritdoc
      */
     public $css = [
-        '//fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap',
+        '//fonts.googleapis.com/css?family=Roboto:300,400,500,700,900',
     ];
 
     /**
      * @inheritdoc
      */
     public $depends = [
+        // StaticAsset::class
     ];
 
     /**
@@ -123,7 +126,11 @@ class WebpackAsset extends AssetBundle
         /* @var $view View */
         $bundle = parent::register($view);
         $wp = 'var webpackBaseUrl = \'' .$bundle->baseUrl.'/\';';
-        $view->registerJs($wp, View::POS_HEAD);
+        $view->registerJs($wp, View::POS_HEAD, 'webpackBaseUrl');
+        /*/
+        $ajaxUrl = 'var ajaxBaseUrl = \''.Url::to(['ajax/']).'\';';
+        $view->registerJs($ajaxUrl, View::POS_HEAD);
+        /**/
         return $bundle;
     }
 

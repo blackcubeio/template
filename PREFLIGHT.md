@@ -1,83 +1,83 @@
 PREFLIGHT 
 =========
 
-Initialisation de la base de données
-------------------------------------
+Initi database
+--------------
 
-### Création de la base
+### Create database
 
 ```sql 
 create database blackcubetemplate CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-### Affectation des droits
+### Define database access
 
 ```sql 
 grant all on blackcubetemplate.* to blackcubetemplate@localhost identified by 'pavbv3m5khngbyci4j';
 ```
 
-Paramétrage des variables d'environnement
------------------------------------------
+Setup environment vars
+----------------------
 
- * Définition du mode de fonctionnement
-   * `YII_ENV` : peut être `dev` ou `prod`
- * Activation du mode de debug
-   * `YII_DEBUG` : peut être `1` ou `0`
- * Activation du mode de maintenance
-    * `YII_MAINTENANCE` : peut être `1` ou `0`
-    * `YII_MAINTENANCE_ALLOWED_IPS` : liste des adresses IPv4 non affectées par le mode maintenance
- * Clef de validation des cookies
-    * `YII_COOKIE_VALIDATION_KEY` : chaine aléatoire de 32 caractères
- * Gestion de la version de l'application
-    * `APP_VERSION` : version au format semver 
- * Accès à la base de données
-    * `DB_DRIVER` : driver de la base de données peut être `mysql` ou `pgsql`
-    * `DB_DATABASE` : nom de la base de données
-    * `DB_USER` : utilisateur ayant accès à la base
-    * `DB_PORT` : port pour accéder à la base (3306 pour mysql)
-    * `DB_HOST` : serveur de base de données (localhost)
-    * `DB_PASSWORD` : mot de passe pour accéder à la base de données
-    * `DB_TABLE_PREFIX` : préfixe à ajouter aux noms des tables dans le cas ou la base est mutualisée
-    * `DB_SCHEMA` : schémas de la base à utiliser (public pour mysql)
-    * `DB_SCHEMA_CACHE` : activation du cache de schémas (à n'activer qu'en production)
-    * `DB_SCHEMA_CACHE_DURATION` : durée de validité du cache de schémas en secondes
- * Accès à la base Redis
-    * `REDIS_ENABLED` : activation de redis peut être `1` ou `0`
-    * `REDIS_HOST` : serveur redis (localhost)
-    * `REDIS_PORT` : port pour accéder à la base (6379)
-    * `REDIS_PASSWORD` : mot de passe pour accéder à redis
-    * `REDIS_DATABASE` : numéro de la base de données rédis à utiliser (0)
- * Accès au filesystem
-    * `FILESYSTEM_TYPE` : activation du filesystem peut être `local` ou `s3`
-    * `FILESYSTEM_CACHE` : activation du cache peut être `1` ou `0`
-    * `FILESYSTEM_CACHE_DURATION` : durée du cache en secondes (par exemple: `3600`)
-    * Configuration en mode `local`
-       * `FILESYSTEM_LOCAL_PATH` : par exemple `@data/files` 
-    * Configuration en mode `s3`
-       * `FILESYSTEM_S3_KEY` : clef S3
-       * `FILESYSTEM_S3_SECRET` : secret S3
-       * `FILESYSTEM_S3_BUCKET` : bucket s3 
-       * `FILESYSTEM_S3_ENDPOINT` : endpoint S3
-       * `FILESYSTEM_S3_PATH_STYLE` : path style `0` pour amazon S3 ou `1` pour minio
-       * `FILESYSTEM_S3_REGION` : par exemple `us-east-1`
+ * Runtime mode
+   * `YII_ENV` : can be `dev` or `prod`
+ * Activate debug mode
+   * `YII_DEBUG` : can be`1` or `0`
+ * Activate maintenance mode
+    * `YII_MAINTENANCE` : can be `1` or `0`
+    * `YII_MAINTENANCE_ALLOWED_IPS` : IPv4 adresses which can access the website even in maintenance mode
+ * Cookies validation key
+    * `YII_COOKIE_VALIDATION_KEY` : 32 chars random string
+ * Define app version (mainly used with CI/CD)
+    * `APP_VERSION` : semver 
+ * Access to database
+    * `DB_DRIVER` : driver can be `mysql` or `pgsql`
+    * `DB_DATABASE` : database name
+    * `DB_USER` : database user
+    * `DB_PORT` : database port (`3306` for mysql)
+    * `DB_HOST` : database host (`localhost`)
+    * `DB_PASSWORD` : database password for defined user
+    * `DB_TABLE_PREFIX` : table prefix
+    * `DB_SCHEMA` : database schema (`public` for mysql)
+    * `DB_SCHEMA_CACHE` : activate database schema cache
+    * `DB_SCHEMA_CACHE_DURATION` : schema cache duration in seconds
+ * Access to Redis
+    * `REDIS_ENABLED` : activate redis can be `1` or `0`
+    * `REDIS_HOST` : redis host (`localhost`)
+    * `REDIS_PORT` : redis port (`6379`)
+    * `REDIS_PASSWORD` : redis password (can be blank)
+    * `REDIS_DATABASE` : redis database number
+ * Access to filesystem
+    * `FILESYSTEM_TYPE` : activate filesystem can be `local` or `s3`
+    * `FILESYSTEM_CACHE` : activate cache can be `1` ou `0`
+    * `FILESYSTEM_CACHE_DURATION` : cache duration in seconds
+    * For `local`
+       * `FILESYSTEM_LOCAL_PATH` : path alias `@data/files` 
+    * For `s3`
+       * `FILESYSTEM_S3_KEY` : key
+       * `FILESYSTEM_S3_SECRET` : secret
+       * `FILESYSTEM_S3_BUCKET` : bucket 
+       * `FILESYSTEM_S3_ENDPOINT` : endpoint (https://xxx)
+       * `FILESYSTEM_S3_PATH_STYLE` : path style `0` for amazon S3 or `1` for minio
+       * `FILESYSTEM_S3_REGION` : `us-east-1`
        * `FILESYSTEM_S3_VERSION` : `latest`
- * Activation du syslog
-    * `SYSLOG_ENABLED` : activation du syslog peut être `0` ou `1`
-    * `SYSLOG_IDENTITY` : identité du syslog `identity` (chaîne de caractères qui sera ajoutée aux logs en fonction de l'OS)
+ * Activate du syslog
+    * `SYSLOG_ENABLED` : activate syslog can be `0` or `1`
+    * `SYSLOG_IDENTITY` : syslog `identity`
 
-Installation des dépendances
-----------------------------
+Install dependencies
+--------------------
 
 ```shell
-# execution en mode "production"
+# execute in "production" mode
 composer install --no-dev
 ```
 
-Initialisation de l'application
--------------------------------
+Init application
+----------------
 
 
-### Préparation des données
+### Prepare data
 
 ```shell
 php yii.php migrate
@@ -85,7 +85,7 @@ php yii.php bcore:init
 php yii.php badmin:rbac
 ```
 
-### Création de l'administrateur
+### Create admin
 
 ```shell
 php yii.php badmin:admin/create

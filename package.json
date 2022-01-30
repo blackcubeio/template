@@ -1,10 +1,10 @@
 {
-  "name": "vertone-recrutement",
+  "name": "blackcube-template",
   "version": "0.0.1",
-  "description": "Vertone Recrutement",
+  "description": "Blackcube temlate",
   "keywords": [
-    "Vertone",
-    "Recrutement"
+    "Blackcube",
+    "Template"
   ],
   "scripts": {
     "watch": "webpack --mode development --progress -w",

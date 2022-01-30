@@ -1,0 +1,15 @@
+{
+  "manifest": {
+    "js": "js/manifest.ad63037d.js"
+  },
+  "main": {
+    "css": "css/main.b0110937.css",
+    "js": "js/main.b0110937.js"
+  },
+  "app": {
+    "js": "js/app.1fe86095.js"
+  },
+  "vendors": {
+    "js": "js/vendors.c93d5a43.js"
+  }
+}

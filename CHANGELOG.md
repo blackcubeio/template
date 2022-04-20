@@ -1,6 +1,8 @@
 CHANGELOG 
 =========
 
+ * Upd: Update to 3.x
+
 Release 1.0.3, March, 9th 2022 <pgaultier@redcat.io>
 ----------------------------------------------------
 

@@ -28,8 +28,8 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-gd": "*",
-        "blackcube/core": "^2.2",
-        "blackcube/admin": "^2.2",
+        "blackcube/core": "dev-devel-3.x",
+        "blackcube/admin": "dev-devel-3.x",
         "vlucas/phpdotenv": "~5.0",
         "yiisoft/yii2": "~2.0",
         "yiisoft/yii2-redis": "~2.0"

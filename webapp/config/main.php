@@ -13,6 +13,7 @@
  */
 
 use yii\redis\Session as RedisSession;
+use yii\redis\Connection as RedisConnection;
 use yii\rest\UrlRule as RestUrlRule;
 use yii\web\JsonParser;
 use yii\web\ErrorHandler;
@@ -39,12 +40,10 @@ if (empty($proxyIp) === false) {
 }
 
 if (getboolenv('REDIS_ENABLED') === true) {
-    $config['components']['session'] = [
-        'class' => RedisSession::class,
-        'redis' => 'redis',
+    $config['container']['singletons'][RedisSession::class] = [
+        'redis' => RedisConnection::class,
         'useCookies' => true,
     ];
-
 }
 
 if (defined('YII_ENV') && YII_ENV !== 'dev') {
@@ -53,14 +52,6 @@ if (defined('YII_ENV') && YII_ENV !== 'dev') {
         'errorAction' => 'technical/maintenance'
     ];
 }
-/**/
-
-/*/
-$config['components']['session'] = [
-    'class' => 'yii\web\Session',
-    'useCookies' => true,
-];
-/**/
 
 if (defined('YII_ENV') && YII_ENV === 'dev') {
     $yiiGii = class_exists(yii\gii\Module::class);

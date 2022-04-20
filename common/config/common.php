@@ -12,11 +12,16 @@
  * @package app\config
  */
 
-use creocoder\flysystem\AwsS3Filesystem;
-use creocoder\flysystem\LocalFilesystem;
+use blackcube\core\components\Flysystem;
+use blackcube\core\components\FlysystemLocal;
+use blackcube\core\components\FlysystemAwsS3;
+use blackcube\core\Module as CoreModule;
+use blackcube\admin\Module as BoModule;
 use yii\db\Connection;
+use yii\caching\CacheInterface;
 use yii\caching\DummyCache;
 use yii\caching\DbCache;
+use yii\caching\FileCache;
 use yii\db\mysql\Schema as MysqSchema;
 use yii\db\pgsql\Schema as PgsqlSchema;
 use yii\i18n\Formatter;
@@ -45,6 +50,22 @@ $config = [
     ],
     'vendorPath' => dirname(__DIR__, 2) . '/vendor',
     'version' => getstrenv('APP_VERSION'),
+    'container' => [
+        'definitions' => [
+        ],
+        'singletons' => [
+            Connection::class => [
+                'charset' => 'utf8',
+                'dsn' => getstrenv('DB_DRIVER').':host=' . getstrenv('DB_HOST') . ';port=' . getstrenv('DB_PORT') . ';dbname=' . getstrenv('DB_DATABASE'),
+                'username' => getstrenv('DB_USER'),
+                'password' => getstrenv('DB_PASSWORD'),
+                'tablePrefix' => getstrenv('DB_TABLE_PREFIX'),
+                'enableSchemaCache' => getboolenv('DB_SCHEMA_CACHE'),
+                'schemaCacheDuration' => getintenv('DB_SCHEMA_CACHE_DURATION'),
+            ],
+            CacheInterface::class => DummyCache::class,
+        ]
+    ],
     'bootstrap' => [
         'log',
         'blackcube',
@@ -52,13 +73,13 @@ $config = [
     ],
     'modules' => [
         'blackcube' => [
-            'class' => blackcube\core\Module::class,
+            'class' => CoreModule::class,
             // 'cmsEnabledmodules' => [''],
             // 'allowedParameterDomains' => ['HOSTS'],
             // 'cache' => 'cache',
         ],
         'bo' => [
-            'class' => blackcube\admin\Module::class, //
+            'class' => BoModule::class, //
             'adminTemplatesAlias' => '@app/admin',
             'additionalAssets' => [],
             'modules' => [
@@ -67,19 +88,8 @@ $config = [
         ],
     ],
     'components' => [
-        'db' => [
-            'class' => Connection::class,
-            'charset' => 'utf8',
-            'dsn' => getstrenv('DB_DRIVER').':host=' . getstrenv('DB_HOST') . ';port=' . getstrenv('DB_PORT') . ';dbname=' . getstrenv('DB_DATABASE'),
-            'username' => getstrenv('DB_USER'),
-            'password' => getstrenv('DB_PASSWORD'),
-            'tablePrefix' => getstrenv('DB_TABLE_PREFIX'),
-            'enableSchemaCache' => getboolenv('DB_SCHEMA_CACHE'),
-            'schemaCacheDuration' => getintenv('DB_SCHEMA_CACHE_DURATION'),
-        ],
-        'cache' => [
-            'class' => DummyCache::class,
-        ],
+        'db' => Connection::class,
+        'cache' => CacheInterface::class,
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -99,19 +109,6 @@ $config = [
                 ],
             ],
         ],
-        /*/
-        'i18n' => [
-            'translations' => [
-                'blackcube.admin*' => [
-                    'class' => \yii\i18n\PhpMessageSource::class,
-                    'basePath' => '@app/i18n',
-                    'fileMap' => [
-                        'blackcube/models' => 'models.php',
-                    ]
-                ]
-            ]
-        ]
-        /**/
     ],
     'params' => [
     ],
@@ -126,7 +123,7 @@ if (getstrenv('DB_DRIVER') === 'pgsql') {
     ];
 }
 
-if (getboolenv('') === true) {
+if (getboolenv('SYSLOG_ENABLED') === true) {
     $config['components']['log']['targets'][] = [
         'class' => SyslogTarget::class,
         'enabled' => getboolenv('SYSLOG_ENABLED'),
@@ -144,8 +141,9 @@ if (getboolenv('') === true) {
         ],
     ];
 }
+
 if (getboolenv('REDIS_ENABLED')) {
-    $config['components']['redis'] = [
+    $config['container']['singletons'][RedisConnection::class] = [
         'class' => RedisConnection::class,
         'hostname' => getstrenv('REDIS_HOST'),
         'port' => getintenv('REDIS_PORT'),
@@ -153,24 +151,26 @@ if (getboolenv('REDIS_ENABLED')) {
     ];
     $password = getstrenv('REDIS_PASSWORD');
     if ($password !== false && empty($password) === false) {
-        $config['components']['redis']['password'] = $password;
+        $config['container']['singletons'][RedisConnection::class]['password'] = $password;
     }
-    $config['components']['cache'] = [
+
+    $config['container']['singletons'][CacheInterface::class] = [
         'class' => RedisCache::class,
-        'redis' => 'redis'
+        'redis' => RedisConnection::class
     ];
+    $config['components']['redis'] = RedisConnection::class;
+
 }
+
 if (getstrenv('FILESYSTEM_TYPE') === 'local') {
-    $config['components']['fs'] = [
-        'class' => LocalFilesystem::class,
+    $config['container']['singletons'][Flysystem::class] = [
+        'class' => FlysystemLocal::class,
         'path' => getstrenv('FILESYSTEM_LOCAL_PATH'),
-        'cache' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'cache' : null,
-        'cacheKey' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'flysystem' : null,
-        'cacheDuration' => (getboolenv('FILESYSTEM_CACHE') === true) ? getintenv('FILESYSTEM_CACHE_DURATION') : null,
     ];
+    $config['components']['fs'] = Flysystem::class;
 } elseif (getstrenv('FILESYSTEM_TYPE') === 's3') {
-    $config['components']['fs'] = [
-        'class' => AwsS3Filesystem::class,
+    $config['container']['singletons'][Flysystem::class] = [
+        'class' => FlysystemAwsS3::class,
         'key' => getstrenv('FILESYSTEM_S3_KEY'),
         'secret' => getstrenv('FILESYSTEM_S3_SECRET'),
         'bucket' => getstrenv('FILESYSTEM_S3_BUCKET'),
@@ -178,9 +178,7 @@ if (getstrenv('FILESYSTEM_TYPE') === 'local') {
         'version' => 'latest',
         'endpoint' => getstrenv('FILESYSTEM_S3_ENDPOINT'),
         'pathStyleEndpoint' => getboolenv('FILESYSTEM_S3_PATH_STYLE'),
-        'cache' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'cache' : null,
-        'cacheKey' => (getboolenv('FILESYSTEM_CACHE') === true) ? 'flysystem' : null,
-        'cacheDuration' => (getboolenv('FILESYSTEM_CACHE') === true) ? getintenv('FILESYSTEM_CACHE_DURATION') : null,
     ];
+    $config['components']['fs'] = Flysystem::class;
 }
 return $config;

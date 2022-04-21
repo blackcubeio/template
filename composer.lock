@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackcubeio/admin.git",
-                "reference": "39e975fc0ae364294ec77c1488989089109a040c"
+                "reference": "0b6771f000061508c76953e00740d5f6a7a272bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/39e975fc0ae364294ec77c1488989089109a040c",
-                "reference": "39e975fc0ae364294ec77c1488989089109a040c",
+                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/0b6771f000061508c76953e00740d5f6a7a272bc",
+                "reference": "0b6771f000061508c76953e00740d5f6a7a272bc",
                 "shasum": ""
             },
             "require": {
@@ -68,7 +68,7 @@
                 "source": "https://code.redcat.io/blackcube/admin/tree/devel",
                 "wiki": "https://code.redcat.io/blackcube/admin/wikis/home"
             },
-            "time": "2022-04-21T06:47:28+00:00"
+            "time": "2022-04-21T09:01:02+00:00"
         },
         {
             "name": "blackcube/core",

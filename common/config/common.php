@@ -103,7 +103,6 @@ $config = [
                         '_SERVER.DB_PASSWORD',
                         '_SERVER.DB_ROOT_PASSWORD',
                         '_SERVER.REDIS_PASSWORD',
-                        '_SERVER.PROFIDEO_PASSWORD',
                         '_SERVER.FILESYSTEM_S3_SECRET',
                     ],
                 ],
@@ -136,7 +135,6 @@ if (getboolenv('SYSLOG_ENABLED') === true) {
             '_SERVER.DB_PASSWORD',
             '_SERVER.DB_ROOT_PASSWORD',
             '_SERVER.REDIS_PASSWORD',
-            '_SERVER.PROFIDEO_PASSWORD',
             '_SERVER.FILESYSTEM_S3_SECRET',
         ],
     ];

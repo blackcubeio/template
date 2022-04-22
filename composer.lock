@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "412b396b54f204a2e397f22a6a06b1ef",
+    "content-hash": "62b568a2a10d6ce6b740cba4dfcf1aa1",
     "packages": [
         {
             "name": "blackcube/admin",
@@ -12,16 +12,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackcubeio/admin.git",
-                "reference": "0b6771f000061508c76953e00740d5f6a7a272bc"
+                "reference": "cf1253251219f43ff203f770e48f2b3bccf83b3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/0b6771f000061508c76953e00740d5f6a7a272bc",
-                "reference": "0b6771f000061508c76953e00740d5f6a7a272bc",
+                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/cf1253251219f43ff203f770e48f2b3bccf83b3a",
+                "reference": "cf1253251219f43ff203f770e48f2b3bccf83b3a",
                 "shasum": ""
             },
             "require": {
-                "blackcube/core": "dev-devel-3.x",
+                "blackcube/core": "3.0.x-dev",
                 "ext-dom": "*",
                 "ext-fileinfo": "*",
                 "ext-intl": "*",
@@ -41,6 +41,11 @@
                 "yiisoft/yii2-gii": "~2.2"
             },
             "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-devel-3.x": "3.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "blackcube\\admin\\": "src/"
@@ -68,7 +73,7 @@
                 "source": "https://code.redcat.io/blackcube/admin/tree/devel",
                 "wiki": "https://code.redcat.io/blackcube/admin/wikis/home"
             },
-            "time": "2022-04-21T09:01:02+00:00"
+            "time": "2022-04-22T17:32:41+00:00"
         },
         {
             "name": "blackcube/core",
@@ -76,12 +81,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackcubeio/core.git",
-                "reference": "9a4ee6b26dbf271ac22a7df2734df8eb2dae4314"
+                "reference": "97879f4b359499da08805ce050bbd6ace3044e55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackcubeio/core/zipball/9a4ee6b26dbf271ac22a7df2734df8eb2dae4314",
-                "reference": "9a4ee6b26dbf271ac22a7df2734df8eb2dae4314",
+                "url": "https://api.github.com/repos/blackcubeio/core/zipball/97879f4b359499da08805ce050bbd6ace3044e55",
+                "reference": "97879f4b359499da08805ce050bbd6ace3044e55",
                 "shasum": ""
             },
             "require": {
@@ -112,6 +117,11 @@
                 "yiisoft/yii2-gii": "~2.2"
             },
             "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-devel-3.x": "3.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "blackcube\\core\\": "src/"
@@ -139,7 +149,7 @@
                 "source": "https://code.redcat.io/blackcube/core/tree/devel",
                 "wiki": "https://code.redcat.io/blackcube/core/wikis/home"
             },
-            "time": "2022-04-20T21:12:05+00:00"
+            "time": "2022-04-22T14:39:58+00:00"
         },
         {
             "name": "bower-asset/inputmask",

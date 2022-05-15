@@ -76,7 +76,6 @@ $config = [
             'class' => CoreModule::class,
             // 'cmsEnabledmodules' => [''],
             // 'allowedParameterDomains' => ['HOSTS'],
-            // 'cache' => 'cache',
         ],
         'bo' => [
             'class' => BoModule::class, //
@@ -84,7 +83,6 @@ $config = [
             'additionalAssets' => [],
             'modules' => [
             ],
-            // 'cache' => 'cache',
         ],
     ],
     'components' => [

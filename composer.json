@@ -1,7 +1,7 @@
 {
     "name": "blackcube/template",
-    "description": "Blackcube template Application",
-    "keywords": ["Blackcube", "template"],
+    "description": "Blackcube template Application including core and admin",
+    "keywords": ["blackcube", "cms", "template", "yii", "yii2", "content management"],
     "homepage": "https://code.redcat.io/blackcube/template",
     "type": "project",
     "license": "proprietary",

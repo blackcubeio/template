@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackcubeio/admin.git",
-                "reference": "cf1253251219f43ff203f770e48f2b3bccf83b3a"
+                "reference": "a8107583a5e73e2883d5f0c516ec942f18b7dae8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/cf1253251219f43ff203f770e48f2b3bccf83b3a",
-                "reference": "cf1253251219f43ff203f770e48f2b3bccf83b3a",
+                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/a8107583a5e73e2883d5f0c516ec942f18b7dae8",
+                "reference": "a8107583a5e73e2883d5f0c516ec942f18b7dae8",
                 "shasum": ""
             },
             "require": {
@@ -30,7 +30,7 @@
                 "php": ">=7.4",
                 "swaggest/json-schema": "~0.12",
                 "vlucas/phpdotenv": "~5.4",
-                "yiisoft/yii2": "~2.0",
+                "yiisoft/yii2": "~2.0.13",
                 "yiisoft/yii2-imagine": "~2.3"
             },
             "require-dev": {
@@ -61,19 +61,23 @@
                     "email": "pgaultier@redcat.io"
                 }
             ],
-            "description": "Blackcube CMS Application",
+            "description": "Blackcube CMS Administration system",
             "homepage": "https://code.redcat.io/blackcube/admin",
             "keywords": [
                 "admin",
+                "back office",
                 "blackcube",
-                "cms"
+                "cms",
+                "content management",
+                "yii",
+                "yii2"
             ],
             "support": {
                 "issues": "https://code.redcat.io/blackcube/admin/issues",
                 "source": "https://code.redcat.io/blackcube/admin/tree/devel",
                 "wiki": "https://code.redcat.io/blackcube/admin/wikis/home"
             },
-            "time": "2022-04-22T17:32:41+00:00"
+            "time": "2022-05-15T13:11:32+00:00"
         },
         {
             "name": "blackcube/core",
@@ -81,12 +85,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackcubeio/core.git",
-                "reference": "97879f4b359499da08805ce050bbd6ace3044e55"
+                "reference": "fd043def877dc92417f429d89495b1afaf9d0d15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackcubeio/core/zipball/97879f4b359499da08805ce050bbd6ace3044e55",
-                "reference": "97879f4b359499da08805ce050bbd6ace3044e55",
+                "url": "https://api.github.com/repos/blackcubeio/core/zipball/fd043def877dc92417f429d89495b1afaf9d0d15",
+                "reference": "fd043def877dc92417f429d89495b1afaf9d0d15",
                 "shasum": ""
             },
             "require": {
@@ -100,7 +104,7 @@
                 "php": ">=7.4",
                 "swaggest/json-schema": "~0.12",
                 "vlucas/phpdotenv": "~5.4",
-                "yiisoft/yii2": "~2.0",
+                "yiisoft/yii2": "~2.0.13",
                 "yiisoft/yii2-imagine": "~2.3"
             },
             "require-dev": {
@@ -137,19 +141,22 @@
                     "email": "pgaultier@redcat.io"
                 }
             ],
-            "description": "Blackcube CMS Core",
+            "description": "Blackcube CMS Core system",
             "homepage": "https://code.redcat.io/blackcube/core",
             "keywords": [
                 "blackcube",
                 "cms",
-                "core"
+                "content management",
+                "core",
+                "yii",
+                "yii2"
             ],
             "support": {
                 "issues": "https://code.redcat.io/blackcube/core/issues",
                 "source": "https://code.redcat.io/blackcube/core/tree/devel",
                 "wiki": "https://code.redcat.io/blackcube/core/wikis/home"
             },
-            "time": "2022-04-22T14:39:58+00:00"
+            "time": "2022-05-15T13:02:13+00:00"
         },
         {
             "name": "bower-asset/inputmask",
@@ -537,16 +544,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "2.4.4",
+            "version": "2.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "837431df8650d9d941d5fdb137181fbb2145da9e"
+                "reference": "9392c5f1df57d865c406ee65e5012d566686be12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/837431df8650d9d941d5fdb137181fbb2145da9e",
-                "reference": "837431df8650d9d941d5fdb137181fbb2145da9e",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/9392c5f1df57d865c406ee65e5012d566686be12",
+                "reference": "9392c5f1df57d865c406ee65e5012d566686be12",
                 "shasum": ""
             },
             "require": {
@@ -603,7 +610,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/2.4.4"
+                "source": "https://github.com/thephpleague/flysystem/tree/2.4.5"
             },
             "funding": [
                 {
@@ -619,7 +626,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-14T14:56:29+00:00"
+            "time": "2022-04-25T18:39:39+00:00"
         },
         {
             "name": "league/mime-type-detection",

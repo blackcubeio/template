@@ -63,6 +63,10 @@ $config = [
                 'enableSchemaCache' => getboolenv('DB_SCHEMA_CACHE'),
                 'schemaCacheDuration' => getintenv('DB_SCHEMA_CACHE_DURATION'),
             ],
+            Flysystem::class => [
+                'class' => FlysystemLocal::class,
+                'path' => getstrenv('FILESYSTEM_LOCAL_PATH'),
+            ],
             CacheInterface::class => DummyCache::class,
         ]
     ],
@@ -88,6 +92,7 @@ $config = [
     'components' => [
         'db' => Connection::class,
         'cache' => CacheInterface::class,
+        'fs' => Flysystem::class,
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -158,13 +163,7 @@ if (getboolenv('REDIS_ENABLED')) {
 
 }
 
-if (getstrenv('FILESYSTEM_TYPE') === 'local') {
-    $config['container']['singletons'][Flysystem::class] = [
-        'class' => FlysystemLocal::class,
-        'path' => getstrenv('FILESYSTEM_LOCAL_PATH'),
-    ];
-    $config['components']['fs'] = Flysystem::class;
-} elseif (getstrenv('FILESYSTEM_TYPE') === 's3') {
+if (getstrenv('FILESYSTEM_TYPE') === 's3') {
     $config['container']['singletons'][Flysystem::class] = [
         'class' => FlysystemAwsS3::class,
         'key' => getstrenv('FILESYSTEM_S3_KEY'),
@@ -175,6 +174,5 @@ if (getstrenv('FILESYSTEM_TYPE') === 'local') {
         'endpoint' => getstrenv('FILESYSTEM_S3_ENDPOINT'),
         'pathStyleEndpoint' => getboolenv('FILESYSTEM_S3_PATH_STYLE'),
     ];
-    $config['components']['fs'] = Flysystem::class;
 }
 return $config;

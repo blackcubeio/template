@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackcubeio/admin.git",
-                "reference": "3700bafcfdf5013a960350f3bd2982fdcb775d33"
+                "reference": "0a6a6e617f4c0523eb01cd3e2231faf9ca763378"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/3700bafcfdf5013a960350f3bd2982fdcb775d33",
-                "reference": "3700bafcfdf5013a960350f3bd2982fdcb775d33",
+                "url": "https://api.github.com/repos/blackcubeio/admin/zipball/0a6a6e617f4c0523eb01cd3e2231faf9ca763378",
+                "reference": "0a6a6e617f4c0523eb01cd3e2231faf9ca763378",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                 "source": "https://code.redcat.io/blackcube/admin/tree/devel",
                 "wiki": "https://code.redcat.io/blackcube/admin/wikis/home"
             },
-            "time": "2022-09-24T09:52:58+00:00"
+            "time": "2022-09-27T07:58:15+00:00"
         },
         {
             "name": "blackcube/core",
@@ -85,12 +85,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackcubeio/core.git",
-                "reference": "8c26b7aaed2ae986a2e8a143f511fa0bfb011f34"
+                "reference": "25db2f4fb4bf38e7cec05169ae801dc1db2c8083"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackcubeio/core/zipball/8c26b7aaed2ae986a2e8a143f511fa0bfb011f34",
-                "reference": "8c26b7aaed2ae986a2e8a143f511fa0bfb011f34",
+                "url": "https://api.github.com/repos/blackcubeio/core/zipball/25db2f4fb4bf38e7cec05169ae801dc1db2c8083",
+                "reference": "25db2f4fb4bf38e7cec05169ae801dc1db2c8083",
                 "shasum": ""
             },
             "require": {
@@ -156,7 +156,7 @@
                 "source": "https://code.redcat.io/blackcube/core/tree/devel",
                 "wiki": "https://code.redcat.io/blackcube/core/wikis/home"
             },
-            "time": "2022-09-24T09:50:30+00:00"
+            "time": "2022-09-27T07:56:19+00:00"
         },
         {
             "name": "bower-asset/inputmask",
@@ -184,7 +184,7 @@
             "version": "3.6.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jquery/jquery-dist.git",
+                "url": "git@github.com:jquery/jquery-dist.git",
                 "reference": "3711efedf0ca2e998cd0417324f717f2e0b828ec"
             },
             "dist": {
